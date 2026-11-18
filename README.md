@@ -1,3 +1,15 @@
+## VPS 运行入口
+
+在 VPS 的 Bash 终端运行：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/meiti789789/sing-box-yg/main/sb.sh)
+```
+
+在菜单 **9「刷新并查看节点」→ 4「设置节点国家或地区前缀」** 输入 `美国`，导出的节点会显示为 `美国 reality`、`美国 hy2` 等。也可填写其他国家或地区，输入 `-` 恢复原命名。
+
+本仓库每天尝试合并 [上游 sing-box-yg](https://github.com/yonggekkk/sing-box-yg) 的更新，并检查前缀功能。以下保留上游的功能说明和教程。
+
 ### 一、Sing-box-yg精装桶一键五协议共存脚本（VPS专用）
 ### 二、Serv00/Hostuno-sb-yg多平台一键三协议共存脚本（Serv00/Hostuno专用）
 
@@ -44,11 +56,11 @@
 ### VPS专用一键脚本如下：快捷方式：```sb```
 
 ```
-bash <(wget -qO- https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/meiti789789/sing-box-yg/main/sb.sh)
 ```
 或者
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sb.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/meiti789789/sing-box-yg/main/sb.sh)
 ```
 
 一键快捷命令现实本地IP订阅：```printf '3\n8\n1\n订阅密码' | sb```
