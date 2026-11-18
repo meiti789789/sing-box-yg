@@ -1,0 +1,59 @@
+name: Sync upstream
+
+on:
+  schedule:
+    - cron: '17 20 * * *' # 04:17 Asia/Shanghai
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-upstream-main
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'meiti789789/sing-box-yg' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Merge upstream and verify country prefixes
+        shell: bash
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch --no-tags https://github.com/yonggekkk/sing-box-yg.git main
+          if git merge-base --is-ancestor FETCH_HEAD HEAD; then
+            echo 'Upstream is already merged.'
+            exit 0
+          fi
+
+          if ! git merge --no-ff --no-commit FETCH_HEAD; then
+            echo '::error::Upstream merge failed. Resolve the conflict on main before retrying.'
+            exit 1
+          fi
+
+          bash -n sb.sh
+          for marker in \
+            'set_node_region(){' \
+            'yellow "4：设置节点国家或地区前缀"' \
+            '/etc/s-box/node-region' \
+            '$(node_uri_name vl-reality reality)' \
+            '$(node_uri_name hy2 hy2)' \
+            '$(node_display_name "vless" "reality")' \
+            '$(node_display_name "hysteria2" "hy2")' \
+            'https://raw.githubusercontent.com/meiti789789/sing-box-yg/main/sb.sh'; do
+            if ! grep -Fq -- "$marker" sb.sh; then
+              echo "::error::Country prefix check failed. Missing: $marker"
+              exit 1
+            fi
+          done
+          git diff --cached --check -- .github/workflows/sync-upstream.yml
+          test -f .github/workflows/sync-upstream.yml
+          git commit -m 'Merge upstream sing-box-yg'
+          git push origin HEAD:refs/heads/main
